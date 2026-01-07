@@ -894,16 +894,10 @@ def main():
         format = mbtiles.executeSQL("SELECT value FROM metadata WHERE name = 'format'", "format")[0]["format"]
         min_z = mbtiles.executeSQL("SELECT MIN(zoom_level) FROM tiles", "min_z")[0]["min_z"]
         max_z = mbtiles.executeSQL("SELECT MAX(zoom_level) FROM tiles", "max_z")[0]["max_z"]
-        min_x = mbtiles.executeSQL(f"SELECT Min(tile_column) FROM tiles where zoom_level = '{max_z}'", "min_x")[0][
-            "min_x"]
-        max_x = mbtiles.executeSQL(f"SELECT Max(tile_column) FROM tiles where zoom_level = '{max_z}'", "max_x")[0][
-            "max_x"]
-        min_y = mbtiles.executeSQL(
-            f"SELECT Min(tile_row) FROM tiles where zoom_level = '{max_z}' and tile_column = '{min_x}'", "min_y")[
-            0]["min_y"]
-        max_y = mbtiles.executeSQL(
-            f"SELECT Max(tile_row) FROM tiles where zoom_level = '{max_z}' and tile_column = '{max_x}'", "max_y")[
-            0]["max_y"]
+        min_x = mbtiles.executeSQL(f"SELECT Min(tile_column) FROM tiles where zoom_level = '{max_z}'", "min_x")[0]["min_x"]
+        max_x = mbtiles.executeSQL(f"SELECT Max(tile_column) FROM tiles where zoom_level = '{max_z}'", "max_x")[0]["max_x"]
+        min_y = mbtiles.executeSQL(f"SELECT Min(tile_row) FROM tiles where zoom_level = '{max_z}' and tile_column = '{min_x}'", "min_y")[0]["min_y"]
+        max_y = mbtiles.executeSQL(f"SELECT Max(tile_row) FROM tiles where zoom_level = '{max_z}' and tile_column = '{max_x}'", "max_y")[0]["max_y"]
 
         min_long = min_x / (1 << max_z) * 360.0 - 180
         max_long = max_x / (1 << max_z) * 360.0 - 180
