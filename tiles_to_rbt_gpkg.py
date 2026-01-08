@@ -123,7 +123,7 @@ class gpkgProvider():
         srs_name = "WGS 84 geodetic"
         organization = "EPSG"
         organization_coordsys_id = "4326"
-        definition = "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]"
+        definition = """GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]"""
         description = "longitude/latitude coordinates in decimal degrees on the WGS 84 spheroid"
         conn.execute(f"INSERT OR IGNORE into gpkg_spatial_ref_sys(srs_name, srs_id, organization, organization_coordsys_id, definition, description) VALUES('{srs_name}', '4326', '{organization}', '{organization_coordsys_id}', '{definition}', '{description}')")
 
@@ -196,52 +196,53 @@ class gpkgProvider():
         minZoom = gpkg_bounds['min_z']
         maxZoom = gpkg_bounds['max_z']
 
-        if (projection == "4326"):
-            top = -180
-            left = 180
+        tile_size = 256
 
-        if (minZoom == -1 or (minZoom <= 0 and 0 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,0,1,1,256,256,156543.0339280408,156543.0339280408,{top},{left},559082264.028718);")
-        if (minZoom == -1 or (minZoom <= 1 and 1 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,1,2,2,256,256,78271.5169640204,78271.5169640204,{top},{left},279541132.014359);")
-        if (minZoom == -1 or (minZoom <= 2 and 2 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,2,4,4,256,256,39135.7584820102,39135.7584820102,{top},{left},139770566.007179);")
-        if (minZoom == -1 or (minZoom <= 3 and 3 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,3,8,8,256,256,19567.8792410051,19567.8792410051,{top},{left},69885283.0035897);")
-        if (minZoom == -1 or (minZoom <= 4 and 4 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,4,16,16,256,256,9783.93962050256,9783.93962050256,{top},{left},34942641.5017949);")
-        if (minZoom == -1 or (minZoom <= 5 and 5 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,5,32,32,256,256,4891.96981025128,4891.96981025128,{top},{left},17471320.7508974);")
-        if (minZoom == -1 or (minZoom <= 6 and 6 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,6,64,64,256,256,2445.98490512564,2445.98490512564,{top},{left},8735660.37544872);")
-        if (minZoom == -1 or (minZoom <= 7 and 7 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,7,128,128,256,256,1222.99245256282,1222.99245256282,{top},{left},4367830.18772436);")
-        if (minZoom == -1 or (minZoom <= 8 and 8 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,8,256,256,256,256,611.49622628141,611.49622628141,{top},{left},2183915.09386218);")
-        if (minZoom == -1 or (minZoom <= 9 and 9 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,9,512,512,256,256,305.748113140705,305.748113140705,{top},{left},1091957.54693109);")
-        if (minZoom == -1 or (minZoom <= 10 and 10 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,10,1024,1024,256,256,152.874056570353,152.874056570353,{top},{left},545978.773465545);")
-        if (minZoom == -1 or (minZoom <= 11 and 11 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,11,2048,2048,256,256,76.4370282851763,76.4370282851763,{top},{left},272989.386732772);")
-        if (minZoom == -1 or (minZoom <= 12 and 12 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,12,4096,4096,256,256,38.2185141425881,38.2185141425881,{top},{left},136494.693366386);")
-        if (minZoom == -1 or (minZoom <= 13 and 13 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,13,8192,8192,256,256,19.1092570712941,19.1092570712941,{top},{left},68247.3466831931);")
-        if (minZoom == -1 or (minZoom <= 14 and 14 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,14,16384,16384,256,256,4.777314267823525,4.777314267823525,{top},{left},34123.67334159644);")
-        if (minZoom == -1 or (minZoom <= 15 and 15 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,15,32768,32768,256,256,2.388657133911763,2.388657133911763,{top},{left},17061.83667079822);")
-        if (minZoom == -1 or (minZoom <= 16 and 16 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,16,65536,65536,256,256,1.194328566955881,1.194328566955881,{top},{left},8530.918335399109);")
-        if (minZoom == -1 or (minZoom <= 17 and 17 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,17,131072,131072,256,256,0.5971642834779406,0.5971642834779406,{top},{left},4265.459167699554);")
-        if (minZoom == -1 or (minZoom <= 18 and 18 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,18,262144,262144,256,256,0.2985821417389703,0.2985821417389703,{top},{left},2132.729583849777);")
-        if (minZoom == -1 or (minZoom <= 19 and 19 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,19,524288,524288,256,256,0.1492910708694852,0.1492910708694852,{top},{left},1066.364791924889);")
-        if (minZoom == -1 or (minZoom <= 20 and 20 <= maxZoom)):
-            conn.execute(f"INSERT OR IGNORE INTO \"gpkgext_tile_matrix\" (\"tms_id\",\"zoom_level\",\"matrix_width\",\"matrix_height\",\"tile_width\",\"tile_height\",\"pixel_x_size\",\"pixel_y_size\",\"top\",\"left\",\"scale_denominator\") VALUES (1,20,1048576,1048576,256,256,0.0746455354347426,0.0746455354347426,{top},{left},533.1823959624443);")
+        pixel_size_map = {
+                    3857: { 0: 156543.0339280408, 1: 78271.5169640204, 2: 39135.7584820102, 3: 19567.8792410051, 4: 9783.93962050256, 5: 4891.96981025128, 
+                           6: 2445.98490512564, 7: 1222.99245256282, 8: 611.49622628141, 9: 305.748113140705, 10: 152.874056570353, 11: 76.4370282851763, 
+                           12: 38.2185141425881, 13: 19.1092570712941, 14: 4.777314267823525, 15: 2.388657133911763, 16: 1.194328566955881, 
+                           17: 0.5971642834779406, 18: 0.2985821417389703, 19: 0.1492910708694852, 20: 0.0746455354347426, },
+                    '4326_x': { z: 360.0 / (tile_size * (2 ** z)) for z in range(0, 21) },
+                    '4326_y': { z: 360.0 / (tile_size * (2 ** z)) for z in range(0, 21) },
+                    }
+        scale_denom_map = {
+                3857: { 
+                       0: 559082264.028718, 1: 279541132.014359, 2: 139770566.007179, 3: 69885283.0035897, 4: 34942641.5017949, 5: 17471320.7508974, 6: 8735660.37544872, 7: 4367830.18772436, 8: 2183915.09386218, 9: 1091957.54693109,
+                       10: 545978.773465545, 11: 272989.386732772, 12: 136494.693366386, 13: 68247.3466831931, 14: 34123.67334159644, 15: 17061.83667079822, 16: 8530.918335399109, 17: 4265.459167699554, 18: 2132.729583849777, 19: 1066.364791924889, 20: 533.1823959624443,
+                       },
+                4326: { 
+                       0: 279541132.014, 1: 139770566.007, 2: 69885283.004, 3: 34942641.502, 4: 17471320.751, 5: 8735660.375, 6: 4367830.188, 7: 2183915.094, 8: 1091957.547, 9: 545978.773, 10: 272989.387, 11: 136494.693, 12: 68247.347, 13: 34123.673, 14: 17061.837, 15: 8530.918, 16: 4265.459, 17: 2132.73,
+                       18: 1066.36, 19: 533.18, 20: 266.59, 
+                       },
+                }
+
+        pixel_size = pixel_size_map[3857]
+        scale_denom = scale_denom_map[3857]
+
+        if (projection == "4326"):
+            top = 180
+            left = -180
+            pixel_size_x = pixel_size_map['4326_x']
+            pixel_size_y = pixel_size_map['4326_y']
+            # no scale_denom for 4326
+            scale_denom = scale_denom_map[4326]
+
+        for zoom in range(21):
+            if (minZoom == -1 or (minZoom <= zoom and zoom <= maxZoom)):
+                matrix_width = 2**(zoom + 1)
+                matrix_height = 2**(zoom)
+                if (projection == "4326"):
+                    sql= f"""
+                        INSERT OR IGNORE INTO gpkgext_tile_matrix (tms_id,zoom_level,matrix_width,matrix_height,tile_width,tile_height,pixel_x_size,pixel_y_size,top,left,scale_denominator)
+                        VALUES (1,{zoom},{matrix_width},{matrix_height},{tile_size},{tile_size},{pixel_size_x[zoom]},{pixel_size_y[zoom]},{top},{left},{scale_denom[zoom]});
+                    """
+                else: 
+                    sql = f"""
+                        INSERT OR IGNORE INTO gpkgext_tile_matrix (tms_id,zoom_level,matrix_width,matrix_height,tile_width,tile_height,pixel_x_size,pixel_y_size,top,left,scale_denominator)
+                        VALUES (1,{zoom},{matrix_width},{matrix_height},{tile_size},{tile_size},{pixel_size[zoom]},{pixel_size[zoom]},{top},{left},{scale_denom[zoom]});
+                    """
+                conn.execute(sql)
         conn.commit()
         conn.close()
 
@@ -899,18 +900,17 @@ def main():
         min_y = mbtiles.executeSQL(f"SELECT Min(tile_row) FROM tiles where zoom_level = '{max_z}' and tile_column = '{min_x}'", "min_y")[0]["min_y"]
         max_y = mbtiles.executeSQL(f"SELECT Max(tile_row) FROM tiles where zoom_level = '{max_z}' and tile_column = '{max_x}'", "max_y")[0]["max_y"]
 
-        min_long = min_x / (1 << max_z) * 360.0 - 180
-        max_long = max_x / (1 << max_z) * 360.0 - 180
-        n1 = math.pi - 2.0 * math.pi * min_y / (1 << max_z)
-        n2 = math.pi - 2.0 * math.pi * max_y / (1 << max_z)
+        min_long = min_x / ((1 << max_z) - 1) * 360.0 - 180
+        max_long = max_x / ((1 << max_z) - 1) * 360.0 - 180
+        n1 = math.pi - 2.0 * math.pi * min_y / ((1 << max_z) - 1)
+        n2 = math.pi - 2.0 * math.pi * max_y / ((1 << max_z) - 1)
         min_lat = 180.0 / math.pi * math.atan((0.5 * (math.exp(n1) - math.exp(-n1))))
         max_lat = 180.0 / math.pi * math.atan(0.5 * (math.exp(n2) - math.exp(-n2)))
         max_lat = max_lat * -1
         min_lat = min_lat * -1
         center_long = (max_long + min_long) / 2
         center_lat = (min_lat + max_lat) / 2
-        gpkg_bounds = getGPKGBounds(min_z, max_z, min_long, max_long,
-                                    min_lat, max_lat, center_lat, center_long, options.projection)
+        gpkg_bounds = getGPKGBounds(min_z, max_z, min_long, max_long, min_lat, max_lat, center_lat, center_long, options.projection)
         description = ""
         for item in mbtiles.metadata:
             if (item['name'] == "description"):
